@@ -17,7 +17,8 @@ class StatesController extends Controller
 
     public function ajax(Request $request) {
 
-            $states = State::find($request->id);
+            if($request->mode === 'update') {
+                $states = State::find($request->id);
             if($states->state === 1) {
                 $states->state = 0;
             }else {
@@ -32,6 +33,31 @@ class StatesController extends Controller
                 'state' => $state->state,
                 'title' => $state->title
                 ]);
+            }
+
+            if ($request->mode === 'create') {
+
+                if($request->title) {
+                    $states = new State();
+                    $states->title = $request->title;
+                    $states->save();
+
+                    return response()->json([
+                        'id' => $states->id
+                        ]);
+                }
+            }
+
+
+
+            if($request->mode === 'delete') {
+                $states = State::find($request->id);
+                
+                $states->delete();
+            }
+
+
+            
     	
     }
 
